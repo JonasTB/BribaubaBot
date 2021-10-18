@@ -10,7 +10,6 @@ defmodule Bot.Consumer do
     cond do
       String.starts_with?(msg.content, "!personagem") -> random_person(msg)
       String.starts_with?(msg.content, "!sorriso") -> random_smile(msg)
-      String.starts_with?(msg.content, "!#{msg}") -> person_phrases(msg)
       true -> :ok
     end
   end
@@ -19,44 +18,22 @@ defmodule Bot.Consumer do
     :ok
   end
 
-  defp person_phrases(msg) do
-    api_phrases = "https://animechan.vercel.app/api/quotes/character?name=#{msg}"
-    phrases = api_phrases[Enum.random(0..5)].quote
-
-    Api.create_message(msg.content, phrases)
-  end
-
   defp random_smile(msg) do
     api_image = "https://nekos.best/api/v1"
-    choices = [
-      "001",
-      "002",
-      "003",
-      "004",
-      "005",
-      "006",
-      "007",
-      "008",
-      "009",
-      "010",
-      "011",
-      "012",
-      "013",
-      "014",
-      "015",
-      "016",
-      "017",
-      "018",
-      "019",
-      "020",
-      "021",
-      "022",
-      "023"
-    ]
 
-    bot_choice = Enum.random(choices)
+    random_number = Enum.random(0..23)
 
-    Api.create_message(msg.channel_id, "#{api_image}/smile/#{bot_choice}.gif")
+    if random_number < 10 do
+      Api.create_message(
+        msg.channel_id,
+        " #{msg.author.username} sorriu #{api_image}/smile/00#{random_number}.gif"
+      )
+    else
+      Api.create_message(
+        msg.channel_id,
+        " #{msg.author.username} sorriu #{api_image}/smile/0#{random_number}.gif"
+      )
+    end
   end
 
   defp random_person(msg) do
